@@ -1,4 +1,4 @@
-package face.recognition.ai.main;
+package face.recognition.ai.common;
 
 import ai.djl.engine.Engine;
 import ai.djl.util.JsonUtils;

@@ -1,4 +1,4 @@
-package face.recognition.ai.main;
+package face.recognition.ai.service.predict;
 
 import ai.djl.Model;
 import ai.djl.ModelException;
@@ -13,6 +13,8 @@ import ai.djl.translate.TranslateException;
 import ai.djl.translate.Translator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.nio.file.Path;
@@ -21,27 +23,21 @@ import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
-import static face.recognition.ai.main.Arguments.HEIGHT;
-import static face.recognition.ai.main.Arguments.WIDTH;
+import static face.recognition.ai.common.Arguments.HEIGHT;
+import static face.recognition.ai.common.Arguments.WIDTH;
 
+@Service
 public class Predict {
 
     private static final Logger logger = LoggerFactory.getLogger(Predict.class);
 
-    public static void main(String[] args) throws IOException, ModelException, TranslateException {
-        Classifications classifications = Predict.predict();
-        logger.info("{}", classifications);
-    }
-
-    public static Classifications predict() throws IOException, ModelException, TranslateException {
-        Path imageFile = Paths.get("src/test/resources/0.png");
-        Image img = ImageFactory.getInstance().fromFile(imageFile);
-
+    public Classifications predict(MultipartFile multipartFile) throws IOException, ModelException, TranslateException {
+        Image img = ImageFactory.getInstance().fromInputStream(multipartFile.getInputStream());
+        logger.info("Read image input stream");
         String modelName = "mlp";
         try (Model model = Model.newInstance(modelName)) {
             model.setBlock(new Mlp(HEIGHT * WIDTH, 10, new int[]{128, 64}));
 
-            // Assume you have run TrainMnist.java example, and saved model in build/model folder.
             Path modelDir = Paths.get("C:\\Users\\user\\Desktop\\archive\\mlp");
             model.load(modelDir);
 

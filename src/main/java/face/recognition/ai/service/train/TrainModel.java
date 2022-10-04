@@ -1,4 +1,4 @@
-package face.recognition.ai.main;
+package face.recognition.ai.service.train;
 
 import ai.djl.Model;
 import ai.djl.basicdataset.cv.classification.ImageFolder;
@@ -22,6 +22,8 @@ import ai.djl.training.loss.Loss;
 import ai.djl.training.util.ProgressBar;
 import ai.djl.translate.Pipeline;
 import ai.djl.translate.TranslateException;
+import face.recognition.ai.common.Arguments;
+import face.recognition.ai.common.Pair;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -30,7 +32,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
-import static face.recognition.ai.main.Arguments.*;
+import static face.recognition.ai.common.Arguments.*;
 
 public class TrainModel {
 
@@ -40,7 +42,7 @@ public class TrainModel {
     private TrainModel() {
     }
 
-    public void run(String[] args) {
+    public static void main(String[] args) {
         try (Model model = buildModel(args)) {
             Path modelDir = Paths.get("C:\\Users\\user\\Desktop\\archive\\mlp");
             Files.createDirectories(modelDir);
@@ -63,7 +65,7 @@ public class TrainModel {
                 new Mlp(
                         HEIGHT * WIDTH,
                         NUM_CLASSES,
-                        new int[]{128, 64});
+                        new int[]{516, 256});
 
         try (Model model = Model.newInstance("mlp")) {
             model.setBlock(block);
@@ -78,7 +80,7 @@ public class TrainModel {
             try (Trainer trainer = model.newTrainer(config)) {
                 trainer.setMetrics(new Metrics());
 
-                Shape inputShape = new Shape(1, HEIGHT * WIDTH);
+                Shape inputShape = new Shape(HEIGHT * WIDTH);
 
                 // initialize trainer with proper input shape
                 trainer.initialize(inputShape);
@@ -124,7 +126,7 @@ public class TrainModel {
                 .setRepository(repository).optPipeline(
                         // create preprocess pipeline
                         new Pipeline()
-                                .add(new Resize(100, 100))
+                                .add(new Resize(WIDTH, HEIGHT))
                                 .add(new ToTensor()))
                 .setSampling(arguments.getBatchSize(), true)
                 .optLimit(arguments.getLimit())

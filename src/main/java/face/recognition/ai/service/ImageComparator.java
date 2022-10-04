@@ -1,38 +1,35 @@
-package face.recognition.ai.main;
+package face.recognition.ai.service;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
-import java.io.File;
 import java.io.IOException;
 
-public class CustomComparator {
+@Service
+public class ImageComparator {
 
-    public static void main(String[] args) throws IOException {
-        getDiff();
-    }
+    private static final Logger logger = LoggerFactory.getLogger(ImageComparator.class);
 
-    public static void getDiff() throws IOException {
+    public String getDiff(MultipartFile multipartFile1, MultipartFile multipartFile2) throws IOException {
 
         BufferedImage imgA = null;
         BufferedImage imgB = null;
 
         // Try block to check for exception
         try {
-
-            // Reading file from local directory by
-            // creating object of File class
-            File fileA = new File("C:\\Users\\user\\Desktop\\br.jpg");
-            File fileB = new File("C:\\Users\\user\\Desktop\\br_1.jpg");
-
             // Reading files
-            imgA = ImageIO.read(fileA);
-            imgB = ImageIO.read(fileB);
+            imgA = ImageIO.read(multipartFile1.getInputStream());
+            imgB = ImageIO.read(multipartFile2.getInputStream());
         }
 
         // Catch block to check for exceptions
         catch (IOException e) {
-            // Display the exceptions on console
-            System.out.println(e.getMessage());
+            // Display the exceptions on server
+            logger.error(e.getMessage());
         }
 
         // Assigning dimensions to image
@@ -47,7 +44,7 @@ public class CustomComparator {
         // not
         if ((width1 != width2) || (height1 != height2)) {
             // Display message straightaway
-            System.out.println("Images dimensions" + " mismatch. Will try to adjust");
+            logger.info("Images dimensions" + " mismatch. Will try to adjust");
             //Adjust sizes
             adjust(imgA, imgB, width1, width2, height1, height2);
         }
@@ -97,10 +94,9 @@ public class CustomComparator {
             int percentage = (int) Math.round((avg_different_pixels / 255) * 100);
 
             // Lastly print the difference percentage
-            System.out.println("Difference Percentage-->" + percentage);
-            return;
+            return ("Difference Percentage-->" + percentage);
         } catch (Exception e) {
-            System.out.println(e.getMessage());
+            logger.info(e.getMessage());
         }
         throw new IOException("Something went wrong");
     }
