@@ -38,10 +38,6 @@ public class TrainModel {
 
     private static final Logger logger = LoggerFactory.getLogger(TrainModel.class);
 
-
-    private TrainModel() {
-    }
-
     public static void main(String[] args) {
         try (Model model = buildModel(args)) {
             Path modelDir = Paths.get("C:\\Users\\user\\Desktop\\archive\\mlp");
