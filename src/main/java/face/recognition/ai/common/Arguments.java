@@ -24,7 +24,7 @@ public class Arguments {
     protected Map<String, String> criteria;
 
     protected void initialize() {
-        epoch = 2;
+        epoch = 10;
         maxGpus = Engine.getInstance().getGpuCount();
         outputDir = "build/model";
         limit = Long.MAX_VALUE;
@@ -41,7 +41,7 @@ public class Arguments {
         if (cmd.hasOption("batch-size")) {
             batchSize = Integer.parseInt(cmd.getOptionValue("batch-size"));
         } else {
-            batchSize = maxGpus > 0 ? 32 * maxGpus : 32;
+            batchSize = 16185;
         }
         isSymbolic = cmd.hasOption("symbolic-model");
         preTrained = cmd.hasOption("pre-trained");

@@ -76,12 +76,12 @@ public class TrainModel {
             try (Trainer trainer = model.newTrainer(config)) {
                 trainer.setMetrics(new Metrics());
 
-                Shape inputShape = new Shape(HEIGHT * WIDTH);
+                Shape inputShape = new Shape(1, HEIGHT * WIDTH);
 
                 // initialize trainer with proper input shape
                 trainer.initialize(inputShape);
 
-                EasyTrain.fit(trainer, 2, trainingSet, validateSet);
+                EasyTrain.fit(trainer, arguments.getEpoch(), trainingSet, validateSet);
 
                 trainer.getTrainingResult();
                 return model;
